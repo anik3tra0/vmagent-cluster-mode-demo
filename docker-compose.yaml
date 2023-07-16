@@ -1,0 +1,60 @@
+version: "3.5"
+services:
+  vmagent-0:
+    container_name: vmagent-0
+    image: victoriametrics/vmagent
+    ports:
+      - "8429:8429"
+    volumes:
+      - vmagentdata:/vmagentdata
+      - ./vmagent-0.yaml:/etc/vmagent/vmagent-0.yaml
+    command:
+      - "--promscrape.config=/etc/vmagent/vmagent-0.yaml"
+      - "--promscrape.cluster.name=self_cluster"
+      - "--promscrape.cluster.membersCount=3"
+      - "--promscrape.cluster.memberNum=0"
+      - "--promscrape.cluster.replicationFactor=3"
+      - "--remoteWrite.url=<remote_write_url>"
+    networks:
+      - vm_net
+    restart: always
+  vmagent-1:
+    container_name: vmagent-1
+    image: victoriametrics/vmagent
+    ports:
+      - "8430:8429"
+    volumes:
+      - vmagentdata:/vmagentdata
+      - ./vmagent-1.yaml:/etc/vmagent/vmagent-1.yaml
+    command:
+      - "--promscrape.config=/etc/vmagent/vmagent-1.yaml"
+      - "--promscrape.cluster.name=self_cluster"
+      - "--promscrape.cluster.membersCount=3"
+      - "--promscrape.cluster.memberNum=1"
+      - "--promscrape.cluster.replicationFactor=3"
+      - "--remoteWrite.url=<remote_write_url>"
+    networks:
+      - vm_net
+    restart: always
+  vmagent-2:
+    container_name: vmagent-2
+    image: victoriametrics/vmagent
+    ports:
+      - "8431:8429"
+    volumes:
+      - vmagentdata:/vmagentdata
+      - ./vmagent-2.yaml:/etc/vmagent/vmagent-2.yaml
+    command:
+      - "--promscrape.config=/etc/vmagent/vmagent-2.yaml"
+      - "--promscrape.cluster.name=self_cluster"
+      - "--promscrape.cluster.membersCount=3"
+      - "--promscrape.cluster.memberNum=2"
+      - "--promscrape.cluster.replicationFactor=3"
+      - "--remoteWrite.url=<remote_write_url>"
+    networks:
+      - vm_net
+    restart: always
+volumes:
+  vmagentdata: { }
+networks:
+  vm_net:
